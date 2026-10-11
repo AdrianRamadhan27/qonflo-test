@@ -53,14 +53,14 @@ different statuses are evaluated against the latest committed status.
 
 All routes use `/api`. Errors have one `{ error: { code, message } }` shape.
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/actors` | Predefined actor list |
-| GET | `/tasks` | Active tasks; `?deleted=true` reads deleted tasks |
-| POST | `/tasks` | Create a task with `title`, `description`, and `actorId` |
-| PATCH | `/tasks/:id/status` | Set `status` and `actorId`; report whether it changed |
-| DELETE | `/tasks/:id` | Soft-delete a task with `actorId` |
-| GET | `/tasks/:id/audit-logs` | Task details and chronological status history |
+| Method | Path                    | Purpose                                                  |
+| ------ | ----------------------- | -------------------------------------------------------- |
+| GET    | `/actors`               | Predefined actor list                                    |
+| GET    | `/tasks`                | Active tasks; `?deleted=true` reads deleted tasks        |
+| POST   | `/tasks`                | Create a task with `title`, `description`, and `actorId` |
+| PATCH  | `/tasks/:id/status`     | Set `status` and `actorId`; report whether it changed    |
+| DELETE | `/tasks/:id`            | Soft-delete a task with `actorId`                        |
+| GET    | `/tasks/:id/audit-logs` | Task details and chronological status history            |
 
 Use `201` for creation, `400` for malformed input, `404` for missing tasks, and
 `409` for a forbidden transition. Do not expose database errors or credentials.

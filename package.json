@@ -1,0 +1,32 @@
+{
+  "name": "taskline",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "predev": "npm run build -w @taskline/shared",
+    "dev": "concurrently -k -n api,web -c cyan,green \"npm run dev -w @taskline/api\" \"npm run dev -w @taskline/web\"",
+    "build": "npm run build -w @taskline/shared && npm run build -w @taskline/api && npm run build -w @taskline/web",
+    "typecheck": "npm run build -w @taskline/shared && npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run typecheck && npm run lint && npm run format:check"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.19.2",
+    "concurrently": "^10.0.6",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.1"
+  }
+}
