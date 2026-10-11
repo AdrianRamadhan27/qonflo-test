@@ -14,7 +14,7 @@
     "predev": "npm run build -w @taskline/shared",
     "dev": "concurrently -k -n api,web -c cyan,green \"npm run dev -w @taskline/api\" \"npm run dev -w @taskline/web\"",
     "build": "npm run build -w @taskline/shared && npm run build -w @taskline/api && npm run build -w @taskline/web",
-    "typecheck": "npm run build -w @taskline/shared && npm run typecheck --workspaces --if-present",
+    "typecheck": "npm run build -w @taskline/shared && npm run typecheck --workspaces --if-present && tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

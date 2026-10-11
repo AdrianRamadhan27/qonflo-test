@@ -164,7 +164,9 @@ export function TaskWorkspace() {
             />
           </div>
         </div>
-        <p className="board-help">Drag a card into the next column, or use its move button.</p>
+        {!deleted ? (
+          <p className="board-help">Drag a card into the next column, or use its move button.</p>
+        ) : null}
         <TaskBoard
           tasks={visibleTasks}
           actors={actors}

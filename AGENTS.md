@@ -19,6 +19,8 @@ solution that preserves the task and audit rules.
    assertions, and abstractions that have only a hypothetical caller.
 5. Use names from the domain. Comments explain reasons and invariants.
 6. Reuse native accessible controls and the existing CSS tokens.
+   Drag and drop must use the same mutation as the move button. Keep keyboard
+   and touch controls, server confirmation, and invalid-drop feedback.
 7. Keep changes within the requested feature. Update documentation when behavior
    or setup changes.
 
