@@ -133,5 +133,6 @@ and evidence requirements for future agent work.
 
 Checks performed: `npm run check` (strict types, lint, formatting), `npm run build`,
 applying the migration and example seed to local Postgres and Supabase, and
-viewing the board and history drawer in the browser. Automated behavioral and
+viewing the local and deployed board and history drawer. The deployed health and
+task-list endpoints also returned successful responses. Automated behavioral and
 concurrency tests have not been run; adding those is the first validation improvement.

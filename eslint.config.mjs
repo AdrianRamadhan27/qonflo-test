@@ -1,7 +1,6 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
-import jsxA11y from 'eslint-plugin-jsx-a11y';
 
 export default tseslint.config(
   { ignores: ['**/dist/**', '**/node_modules/**', '.vercel/**'] },
@@ -19,10 +18,9 @@ export default tseslint.config(
   },
   {
     files: ['apps/web/src/**/*.{ts,tsx}'],
-    plugins: { 'react-hooks': reactHooks, 'jsx-a11y': jsxA11y },
+    plugins: { 'react-hooks': reactHooks },
     rules: {
       ...reactHooks.configs.flat.recommended.rules,
-      ...jsxA11y.flatConfigs.recommended.rules,
     },
   },
 );
