@@ -1,11 +1,11 @@
 import postgres from 'postgres';
-import { readEnvironment } from '../src/environment.js';
+import { databaseSsl, readEnvironment } from '../src/environment.js';
 
 const environment = readEnvironment();
 const sql = postgres(environment.DATABASE_URL, {
   max: 1,
   prepare: false,
-  ssl: environment.DATABASE_SSL,
+  ssl: databaseSsl(environment),
 });
 
 try {

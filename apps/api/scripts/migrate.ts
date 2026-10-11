@@ -1,13 +1,18 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import postgres from 'postgres';
-import { readEnvironment } from '../src/environment.js';
+import { databaseSsl, readEnvironment } from '../src/environment.js';
 
 const environment = readEnvironment();
 const adminUrl = process.env.ADMIN_DATABASE_URL;
 if (!adminUrl) throw new Error('Set ADMIN_DATABASE_URL before running migrations.');
 
-const sql = postgres(adminUrl, { max: 1, prepare: false, ssl: environment.DATABASE_SSL });
+const sql = postgres(adminUrl, {
+  max: 1,
+  prepare: false,
+  ssl: databaseSsl(environment),
+  onnotice: () => {},
+});
 const directory = fileURLToPath(new URL('../../../supabase/migrations/', import.meta.url));
 
 try {
