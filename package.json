@@ -18,7 +18,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run typecheck && npm run lint && npm run format:check"
+    "check": "npm run typecheck && npm run lint && npm run format:check",
+    "db:migrate": "tsx apps/api/scripts/migrate.ts",
+    "db:seed": "tsx apps/api/scripts/seed.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
