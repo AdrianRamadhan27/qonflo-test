@@ -19,7 +19,8 @@ function parseInput<T>(schema: ZodType<T>, input: unknown): T {
   return result.data;
 }
 
-const listQuerySchema = z.strictObject({ deleted: z.enum(['true', 'false']).default('false') });
+// Validate supported filters; hosts can append their own routing query parameters.
+const listQuerySchema = z.object({ deleted: z.enum(['true', 'false']).default('false') });
 const service = createTaskService(database);
 export const taskRoutes = Router();
 
