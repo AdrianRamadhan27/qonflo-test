@@ -3,6 +3,8 @@
 A small Kanban task manager built for the Qonflo take-home task. Create work,
 move it through four statuses, and see who changed each task and when.
 
+[Live demo](https://qonflo-test.vercel.app)
+
 `to_do → pending → in_progress → done`
 
 Select an actor, then drag a card into the next column or use its move button.
