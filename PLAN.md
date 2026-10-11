@@ -68,9 +68,11 @@ List all tasks for this small exercise; pagination is a later scaling change.
 
 ## User experience
 
-- A compact task list and adjacent history panel, stacked on small screens.
+- A four-column Kanban board, with a history drawer opened from each card.
 - Status labels and a four-step progression make the workflow visible.
 - One explicit next-status action per task prevents accidental skips.
+- Drag and drop uses the same status API. Invalid drops leave the task unchanged;
+  pointer, touch, and keyboard controls preserve the one-step workflow.
 - An actor selector stays visible near the primary actions.
 - A short create form and a delete confirmation use native accessible controls.
 - The history shows actor, status pair, and a complete localized timestamp.
@@ -84,8 +86,8 @@ List all tasks for this small exercise; pagination is a later scaling change.
 1. Project scaffold, strict TypeScript, shared contracts, and agent guidance.
 2. Database schema, immutable audit rules, and reproducible migrations.
 3. Task API, status validation, consistent errors, and database transactions.
-4. Task list, creation, deletion, actor selection, and status actions.
-5. Audit history panel, deleted-task history, and responsive interaction states.
+4. Task management, creation, deletion, actor selection, and status actions.
+5. Kanban columns, audit history drawer, deleted-task history, and responsive states.
 6. Hosting entry point and concise documentation of setup and trade-offs.
 
 Make each stage a separate commit when it is complete.

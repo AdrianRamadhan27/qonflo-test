@@ -5,7 +5,9 @@ import { errorMessage } from '../../api/client';
 import { Icon } from '../../components/Icon';
 import { useActors, useTaskActions, useTasks } from './queries';
 import { CreateTaskDialog, DeleteTaskDialog } from './TaskDialogs';
-import { TaskList } from './TaskList';
+import { TaskBoard } from './TaskBoard';
+import { TaskHistory } from './TaskHistory';
+import { Modal } from '../../components/Modal';
 import { WorkspaceHeader } from './WorkspaceHeader';
 
 type Dialog = { kind: 'create' } | { kind: 'delete'; task: Task } | null;
@@ -14,7 +16,6 @@ type Notice = { text: string; tone: 'success' | 'error' } | null;
 export function TaskWorkspace() {
   const [actorId, setActorId] = useState<ActorId>('john.doe');
   const [deleted, setDeleted] = useState(false);
-  const [filter, setFilter] = useState<TaskStatus | 'all'>('all');
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [dialog, setDialog] = useState<Dialog>(null);
@@ -27,13 +28,10 @@ export function TaskWorkspace() {
   const tasks = taskQuery.data?.tasks ?? [];
   const actorName = actors.find((actor) => actor.id === actorId)?.name ?? actorId;
   const searchTerm = search.trim().toLowerCase();
-  const visibleTasks = tasks.filter(
-    (task) =>
-      (filter === 'all' || task.status === filter) &&
-      (task.title + ' ' + task.description).toLowerCase().includes(searchTerm),
+  const visibleTasks = tasks.filter((task) =>
+    (task.title + ' ' + task.description).toLowerCase().includes(searchTerm),
   );
-  const selectedTask =
-    visibleTasks.find((task) => task.id === selectedId) ?? visibleTasks[0] ?? null;
+  const selectedTask = tasks.find((task) => task.id === selectedId) ?? null;
   const actionsDisabled =
     actorQuery.isPending ||
     actorQuery.isError ||
@@ -42,15 +40,27 @@ export function TaskWorkspace() {
 
   function switchView(showDeleted: boolean) {
     setDeleted(showDeleted);
-    setFilter('all');
     setSelectedId(null);
     setSearch('');
     setNotice(null);
   }
 
-  function advance(task: Task) {
-    const status = NEXT_STATUS[task.status];
-    if (!status) return;
+  function move(task: Task, status: TaskStatus) {
+    if (actionsDisabled || status === task.status) return;
+    const nextStatus = NEXT_STATUS[task.status];
+    if (nextStatus !== status) {
+      setNotice({
+        tone: 'error',
+        text: nextStatus
+          ? 'Tasks move one step forward. Move “' +
+            task.title +
+            '” to ' +
+            STATUS_LABELS[nextStatus] +
+            ' next.'
+          : 'This task is done and cannot move further.',
+      });
+      return;
+    }
     setNotice(null);
     actions.changeStatus.mutate(
       { id: task.id, input: { status, actorId } },
@@ -67,6 +77,11 @@ export function TaskWorkspace() {
     );
   }
 
+  function advance(task: Task) {
+    const status = NEXT_STATUS[task.status];
+    if (status) move(task, status);
+  }
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#task-list">
@@ -81,7 +96,7 @@ export function TaskWorkspace() {
       <main className="workspace">
         <div className="workspace-heading">
           <div>
-            <h1>Team tasks</h1>
+            <h1>Team board</h1>
             <p>Keep work moving. See what changed.</p>
           </div>
           <button
@@ -149,44 +164,43 @@ export function TaskWorkspace() {
             />
           </div>
         </div>
-        <div className="workspace-grid">
-          <TaskList
-            tasks={tasks}
-            visibleTasks={visibleTasks}
-            actors={actors}
-            deleted={deleted}
-            filter={filter}
-            hasFilters={searchTerm !== '' || filter !== 'all'}
-            pending={taskQuery.isPending}
-            error={taskQuery.error}
-            selectedId={selectedTask?.id ?? null}
-            busyId={
-              actions.changeStatus.isPending ? (actions.changeStatus.variables?.id ?? null) : null
-            }
-            actionsDisabled={actionsDisabled}
-            onFilter={setFilter}
-            onSelect={setSelectedId}
-            onAdvance={advance}
-            onDelete={(task) => {
-              actions.remove.reset();
-              setDialog({ kind: 'delete', task });
-            }}
-            onRetry={() => {
-              void taskQuery.refetch();
-            }}
-          />
-          <aside className="history-panel" aria-label="Task history">
-            <div className="panel-label">
-              <Icon name="history" /> Task history
-            </div>
-            {selectedTask ? <h2>{selectedTask.title}</h2> : <h2>Every change has a story</h2>}
-            <p className="history-placeholder">Select a task to follow its status history.</p>
-          </aside>
-        </div>
+        <p className="board-help">Drag a card into the next column, or use its move button.</p>
+        <TaskBoard
+          tasks={visibleTasks}
+          actors={actors}
+          deleted={deleted}
+          searching={searchTerm !== ''}
+          pending={taskQuery.isPending}
+          error={taskQuery.error}
+          busyId={
+            actions.changeStatus.isPending ? (actions.changeStatus.variables?.id ?? null) : null
+          }
+          actionsDisabled={actionsDisabled}
+          onOpen={setSelectedId}
+          onAdvance={advance}
+          onMove={move}
+          onDelete={(task) => {
+            actions.remove.reset();
+            setDialog({ kind: 'delete', task });
+          }}
+          onRetry={() => {
+            void taskQuery.refetch();
+          }}
+        />
         <footer className="workspace-footer">
           <Icon name="history" /> Status history is retained when a task is deleted.
         </footer>
       </main>
+      {selectedTask ? (
+        <Modal
+          className="modal-drawer"
+          title="Task history"
+          titleId="history-heading"
+          onClose={() => setSelectedId(null)}
+        >
+          <TaskHistory task={selectedTask} actors={actors} />
+        </Modal>
+      ) : null}
       {dialog?.kind === 'create' ? (
         <CreateTaskDialog
           actorId={actorId}
@@ -199,7 +213,7 @@ export function TaskWorkspace() {
               onSuccess: ({ task }) => {
                 setDialog(null);
                 switchView(false);
-                setSelectedId(task.id);
+                setSelectedId(null);
                 setNotice({ tone: 'success', text: 'Created “' + task.title + '”.' });
               },
             });

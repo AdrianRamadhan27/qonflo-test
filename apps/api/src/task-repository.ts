@@ -93,9 +93,9 @@ export function createTaskRepository(sql: Database) {
 
     async history(id: string, client: QueryClient): Promise<AuditLog[]> {
       const rows = await client<AuditRow[]>`
-        select id::text, task_id, task_title, actor_id, from_status, to_status, changed_at
-        from task_manager.audit_logs where task_id = ${id}
-        order by changed_at asc, id asc
+        select audit.id::text as id, task_id, task_title, actor_id, from_status, to_status, changed_at
+        from task_manager.audit_logs as audit where task_id = ${id}
+        order by audit.changed_at asc, audit.id asc
       `;
       return rows.map((row) => ({
         id: row.id,

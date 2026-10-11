@@ -8,9 +8,10 @@ interface ModalProps {
   onClose: () => void;
   children: ReactNode;
   initialFocus?: RefObject<HTMLInputElement | null>;
+  className?: string;
 }
 
-export function Modal({ title, titleId, onClose, children, initialFocus }: ModalProps) {
+export function Modal({ title, titleId, onClose, children, initialFocus, className }: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export function Modal({ title, titleId, onClose, children, initialFocus }: Modal
   return (
     <dialog
       ref={dialogRef}
-      className="modal"
+      className={'modal' + (className ? ' ' + className : '')}
       aria-labelledby={titleId}
       onCancel={(event) => {
         event.preventDefault();

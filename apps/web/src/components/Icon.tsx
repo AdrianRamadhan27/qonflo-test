@@ -2,6 +2,11 @@ import type { ReactNode } from 'react';
 
 const paths = {
   plus: <path d="M12 5v14M5 12h14" />,
+  grip: (
+    <>
+      <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01" strokeWidth="3" />
+    </>
+  ),
   arrow: <path d="M5 12h14m-6-6 6 6-6 6" />,
   history: (
     <>
